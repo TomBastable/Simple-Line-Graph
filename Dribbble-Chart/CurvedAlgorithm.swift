@@ -23,34 +23,34 @@ class CurveAlgorithm {
         let delta: CGFloat = 0.3 // The value that help to choose temporary control points.
         
         // Calculate temporary control points, these control points make Bezier segments look straight and not curving at all
-        for i in 1..<points.count {
-            let A = points[i-1]
-            let B = points[i]
-            let controlPoint1 = CGPoint(x: A.x + delta*(B.x-A.x), y: A.y + delta*(B.y - A.y))
-            let controlPoint2 = CGPoint(x: B.x - delta*(B.x-A.x), y: B.y - delta*(B.y - A.y))
+        for value in 1..<points.count {
+            let pointA = points[value-1]
+            let pointB = points[value]
+            let controlPoint1 = CGPoint(x: pointA.x + delta*(pointB.x-pointA.x), y: pointA.y + delta*(pointB.y - pointA.y))
+            let controlPoint2 = CGPoint(x: pointB.x - delta*(pointB.x-pointA.x), y: pointB.y - delta*(pointB.y - pointA.y))
             let curvedSegment = CurvedSegment(controlPoint1: controlPoint1, controlPoint2: controlPoint2)
             result.append(curvedSegment)
         }
         
         // Calculate good control points
-        for i in 1..<points.count-1 {
+        for value in 1..<points.count-1 {
             /// A temporary control point
-            let M = result[i-1].controlPoint2
+            let pointM = result[value-1].controlPoint2
             
             /// A temporary control point
-            let N = result[i].controlPoint1
+            let pointN = result[value].controlPoint1
             
             /// central point
-            let A = points[i]
+            let pointA = points[value]
             
             /// Reflection of M over the point A
-            let MM = CGPoint(x: 2 * A.x - M.x, y: 2 * A.y - M.y)
+            let pointMM = CGPoint(x: 2 * pointA.x - pointM.x, y: 2 * pointA.y - pointM.y)
             
             /// Reflection of N over the point A
-            let NN = CGPoint(x: 2 * A.x - N.x, y: 2 * A.y - N.y)
+            let pointNN = CGPoint(x: 2 * pointA.x - pointN.x, y: 2 * pointA.y - pointN.y)
             
-            result[i].controlPoint1 = CGPoint(x: (MM.x + N.x)/2, y: (MM.y + N.y)/2)
-            result[i-1].controlPoint2 = CGPoint(x: (NN.x + M.x)/2, y: (NN.y + M.y)/2)
+            result[value].controlPoint1 = CGPoint(x: (pointMM.x + pointN.x)/2, y: (pointMM.y + pointN.y)/2)
+            result[value-1].controlPoint2 = CGPoint(x: (pointNN.x + pointM.x)/2, y: (pointNN.y + pointM.y)/2)
         }
         
         return result
@@ -66,8 +66,8 @@ class CurveAlgorithm {
         var curveSegments: [CurvedSegment] = []
         curveSegments = controlPointsFrom(points: dataPoints)
         
-        for i in 1..<dataPoints.count {
-            path.addCurve(to: dataPoints[i], controlPoint1: curveSegments[i-1].controlPoint1, controlPoint2: curveSegments[i-1].controlPoint2)
+        for value in 1..<dataPoints.count {
+            path.addCurve(to: dataPoints[value], controlPoint1: curveSegments[value-1].controlPoint1, controlPoint2: curveSegments[value-1].controlPoint2)
         }
         return path
     }
